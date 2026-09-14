@@ -71,6 +71,14 @@ class MainActivity : AppCompatActivity() {
         etCount.addTextChangedListener(watcher)
         etSum.addTextChangedListener(watcher)
 
+        btnTotal.setOnClickListener {
+            val sum = etSum.text.toString().toDoubleOrNull() ?: 0.0
+            val tip = calculateTip()
+            val discount = calculateDiscount()
+            val total = calculateTotal(sum, tip, discount)
+            etResult.setText("Итого: %.2f".format(total))
+        }
+
     }
 
     //Сумма чаевых = сумма заказа * процент / 100
