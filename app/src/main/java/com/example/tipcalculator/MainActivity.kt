@@ -6,6 +6,7 @@ import android.widget.EditText
 import android.widget.RadioButton
 import android.widget.RadioGroup
 import android.widget.SeekBar
+import com.google.android.material.snackbar.Snackbar
 import androidx.appcompat.app.AppCompatActivity
 
 class MainActivity : AppCompatActivity() {
@@ -35,8 +36,31 @@ class MainActivity : AppCompatActivity() {
         rg7 = findViewById(R.id.rg7)
         rg10 = findViewById(R.id.rg10)
         btnTotal = findViewById(R.id.btnTotal)
+
+        //SeekBar с шагом 5 и Snackbar
+        seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener{
+            override fun onProgressChanged(sb: SeekBar?, progress: Int, fronUser: Boolean) {
+                val stepped = (progress / 5)
+                if(progress != stepped){
+                    sb?.progress = stepped
+                    return
+                }
+
+                val tip = calculateTip()
+                Snackbar.make(
+                    findViewById(android.R.id.content),
+                    "Сумма чаевых: %.2f".format(tip),
+                    Snackbar.LENGTH_SHORT
+                ).show()
+
+//                updateableFlags()
+            }
+
+            override fun onStartTrackingTouch(p0: SeekBar?) {}
+            override fun onStopTrackingTouch(p0: SeekBar?) {            }
+        })
     }
-//    Сумма чаевых = сумма заказа * процент / 100
+    //Сумма чаевых = сумма заказа * процент / 100
     private fun calculateTip(): Double{
         val sum = etSum.text.toString().toDoubleOrNull() ?: 0.0
         return sum * seekBar.progress / 100.0
