@@ -6,6 +6,8 @@ import android.widget.EditText
 import android.widget.RadioButton
 import android.widget.RadioGroup
 import android.widget.SeekBar
+import android.text.Editable
+import android.text.TextWatcher
 import com.google.android.material.snackbar.Snackbar
 import androidx.appcompat.app.AppCompatActivity
 
@@ -53,13 +55,24 @@ class MainActivity : AppCompatActivity() {
                     Snackbar.LENGTH_SHORT
                 ).show()
 
-//                updateableFlags()
+                updateDiscount()
             }
 
             override fun onStartTrackingTouch(p0: SeekBar?) {}
             override fun onStopTrackingTouch(p0: SeekBar?) {            }
         })
+
+//        Автопересчёт скидки при вводе
+        val watcher = object : TextWatcher{
+            override fun afterTextChanged(s: Editable?) { updateDiscount() }
+            override fun beforeTextChanged(s: CharSequence?, st: Int, c: Int, a: Int) {}
+            override fun onTextChanged(s: CharSequence?, st: Int, b: Int, c: Int) {}
+        }
+        etCount.addTextChangedListener(watcher)
+        etSum.addTextChangedListener(watcher)
+
     }
+
     //Сумма чаевых = сумма заказа * процент / 100
     private fun calculateTip(): Double{
         val sum = etSum.text.toString().toDoubleOrNull() ?: 0.0
@@ -84,9 +97,23 @@ class MainActivity : AppCompatActivity() {
         return sum * getDiscountPercent() / 100.0
     }
 
+//    Программный выбор радиокнопки + вывод суммы скидки
+    private fun updateDiscount() {
+        when (getDiscountPercent()){
+            3 -> rg3.isChecked = true
+            5 -> rg5.isChecked = true
+            7 -> rg7.isChecked = true
+            10 -> rg10.isChecked = true
+            else -> rgDiscount.clearCheck()
+        }
+        etResult.setText("Скидка: %.2f".format(calculateDiscount()))
+    }
+
 //    Итог = сумма + чаевые - скидка
-private fun calculateTotal(sum: Double, tip: Double, discount: Double): Double{
-    return sum + tip - discount
-}
+    private fun calculateTotal(sum: Double, tip: Double, discount: Double): Double{
+        return sum + tip - discount
+    }
+
+
 
 }
