@@ -108,10 +108,11 @@
 
     <RadioGroup
         android:id="@+id/rgDiscount"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:gravity="center">
+        android:gravity="center"
+        android:layout_marginLeft="30dp">
 
         <RadioButton
             android:id="@+id/rg3"
@@ -119,6 +120,8 @@
             android:layout_height="wrap_content"
             android:text="3%"
             android:enabled="false"
+            android:textSize="20dp"
+            android:textColor="@color/black"
             />
 
         <RadioButton
@@ -127,6 +130,8 @@
             android:layout_height="wrap_content"
             android:text="5%"
             android:enabled="false"
+            android:textSize="20dp"
+            android:textColor="@color/black"
             />
 
         <RadioButton
@@ -135,6 +140,8 @@
             android:layout_height="wrap_content"
             android:text="7%"
             android:enabled="false"
+            android:textSize="20dp"
+            android:textColor="@color/black"
             />
 
         <RadioButton
@@ -143,9 +150,35 @@
             android:layout_height="wrap_content"
             android:text="10%"
             android:enabled="false"
+            android:textSize="20dp"
+            android:textColor="@color/black"
             />
 
     </RadioGroup>
     </LinearLayout>
+
+    <!-- Поле для вывода скидки / итога -->
+
+    <EditText
+        android:id="@+id/etResult"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:minHeight="48dp"
+        android:layout_marginTop="20dp"
+        android:background="#F8BBD0"
+        android:focusable="false"
+        android:hint="Сумма скидки"
+        android:paddingHorizontal="24dp"/>
+
+    <Button
+        android:id="@+id/btResult"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Итого"
+        android:textSize="18dp"
+        android:paddingVertical="10dp"
+        android:backgroundTint="#52bafa"
+        android:textColor="@color/black"
+        android:layout_marginTop="20dp"/>
 
 </LinearLayout>
