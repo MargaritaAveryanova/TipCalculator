@@ -15,6 +15,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.text.input.KeyboardType
 import com.example.tipcalkulator.ui.theme.TipCalkulatorTheme
@@ -76,6 +77,8 @@ fun TipCalcScreen() {
     val orderSum = orderSumText.toDoubleOrNull() ?: 0.0
     val dishCount = dishCountText.toIntOrNull() ?: 0
     val discountPercent = calculateDiscountPercent(dishCount)
+    var resultText by remember { mutableStateOf("") }
+    var isTotalShown by remember { mutableStateOf(false) }
 
     Scaffold { padding ->
         Column(
@@ -88,8 +91,11 @@ fun TipCalcScreen() {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text("Сумма заказа:", modifier = Modifier.width(150.dp))
                 OutlinedTextField(
-                    value = "",
-                    onValueChange = {},
+                    value = orderSumText,
+                    onValueChange = {
+                        orderSumText = it
+                        isTotalShown = false
+                    },
                     singleLine = true,
                     modifier = Modifier.weight(1f)
                 )
@@ -98,8 +104,11 @@ fun TipCalcScreen() {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text("Количество блюд:", modifier = Modifier.width(150.dp))
                 OutlinedTextField(
-                    value = "",
-                    onValueChange = {},
+                    value = orderSumText,
+                    onValueChange = {
+                        orderSumText = it
+                        isTotalShown = false
+                    },
                     singleLine = true,
                     modifier = Modifier.weight(1f)
                 )
@@ -140,6 +149,21 @@ fun TipCalcScreen() {
                         )
                         Text("$percent%")
                     }
+                }
+            }
+
+            OutlinedTextField(
+                value = resultText,
+                onValueChange = {},
+                readOnly = true,
+                label = { Text(if (isTotalShown) "Итого" else "Сумма скидки") },
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            LaunchedEffect(orderSum, dishCount, isTotalShown) {
+                if (!isTotalShown) {
+                    val discount = calculateDiscountAmount(orderSum, dishCount)
+                    resultText = "%.2f".format(discount)
                 }
             }
         }
