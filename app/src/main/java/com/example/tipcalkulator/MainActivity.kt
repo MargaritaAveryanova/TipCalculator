@@ -36,6 +36,33 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+// ---------- ФУНКЦИИ РАСЧЁТОВ ----------
+
+fun calculateDiscountPercent(dishCount: Int): Int {
+    return when {
+        dishCount <= 0 -> 0
+        dishCount in 1..2 -> 3
+        dishCount in 3..5 -> 5
+        dishCount in 6..10 -> 7
+        else -> 10
+    }
+}
+
+fun calculateDiscountAmount(orderSum: Double, dishCount: Int): Double {
+    val percent = calculateDiscountPercent(dishCount)
+    return orderSum * percent / 100.0
+}
+
+fun calculateTips(orderSum: Double, tipsPercent: Int): Double {
+    return orderSum * tipsPercent / 100.0
+}
+
+fun calculateTotal(orderSum: Double, dishCount: Int, tipsPercent: Int): Double {
+    val discount = calculateDiscountAmount(orderSum, dishCount)
+    val tips = calculateTips(orderSum, tipsPercent)
+    return orderSum - discount + tips
+}
+
 @Composable
 fun TipCalcScreen() {
 
@@ -83,7 +110,7 @@ fun TipCalcScreen() {
                 valueRange = 0f..25f,
                 steps = 4,
                 onValueChangeFinished = {
-                    val tips = orderSum * tipsPercent / 100.0
+                    val tips = calculateTips(orderSum, tipsPercent.toInt())
                     scope.launch {
                         snackbarHostState.showSnackbar("Сумма чаевых: %.2f".format(tips))
                     }
