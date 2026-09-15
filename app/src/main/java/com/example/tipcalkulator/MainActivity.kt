@@ -80,7 +80,9 @@ fun TipCalcScreen() {
     var resultText by remember { mutableStateOf("") }
     var isTotalShown by remember { mutableStateOf(false) }
 
-    Scaffold { padding ->
+    Scaffold(
+        snackbarHost = { SnackbarHost(snackbarHostState) }
+    ) { padding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -104,9 +106,9 @@ fun TipCalcScreen() {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text("Количество блюд:", modifier = Modifier.width(150.dp))
                 OutlinedTextField(
-                    value = orderSumText,
+                    value = dishCountText,
                     onValueChange = {
-                        orderSumText = it
+                        dishCountText = it
                         isTotalShown = false
                     },
                     singleLine = true,
@@ -144,7 +146,7 @@ fun TipCalcScreen() {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         RadioButton(
                             selected = discountPercent == percent,
-                            onClick = { /* выбор программный */ },
+                            onClick = {},
                             enabled = false
                         )
                         Text("$percent%")
@@ -165,6 +167,17 @@ fun TipCalcScreen() {
                     val discount = calculateDiscountAmount(orderSum, dishCount)
                     resultText = "%.2f".format(discount)
                 }
+            }
+
+            Button(
+                onClick = {
+                    val total = calculateTotal(orderSum, dishCount, tipsPercent.toInt())
+                    resultText = "%.2f".format(total)
+                    isTotalShown = true
+                },
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text("Итого")
             }
         }
     }
