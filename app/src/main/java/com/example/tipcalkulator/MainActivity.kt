@@ -74,6 +74,8 @@ fun TipCalcScreen() {
     val scope = rememberCoroutineScope()
 
     val orderSum = orderSumText.toDoubleOrNull() ?: 0.0
+    val dishCount = dishCountText.toIntOrNull() ?: 0
+    val discountPercent = calculateDiscountPercent(dishCount)
 
     Scaffold { padding ->
         Column(
@@ -122,6 +124,23 @@ fun TipCalcScreen() {
             ) {
                 Text("0")
                 Text("25")
+            }
+
+            Text("Скидка:")
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                listOf(3, 5, 7, 10).forEach { percent ->
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        RadioButton(
+                            selected = discountPercent == percent,
+                            onClick = { /* выбор программный */ },
+                            enabled = false
+                        )
+                        Text("$percent%")
+                    }
+                }
             }
         }
     }
