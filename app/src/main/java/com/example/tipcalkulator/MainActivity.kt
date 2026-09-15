@@ -15,8 +15,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.text.input.KeyboardType
 import com.example.tipcalkulator.ui.theme.TipCalkulatorTheme
+import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -39,6 +41,12 @@ fun TipCalcScreen() {
 
     var orderSumText by remember { mutableStateOf("") }
     var dishCountText by remember { mutableStateOf("") }
+    var tipsPercent by remember { mutableStateOf(0f) }
+
+    val snackbarHostState = remember { SnackbarHostState() }
+    val scope = rememberCoroutineScope()
+
+    val orderSum = orderSumText.toDoubleOrNull() ?: 0.0
 
     Scaffold { padding ->
         Column(
@@ -66,6 +74,27 @@ fun TipCalcScreen() {
                     singleLine = true,
                     modifier = Modifier.weight(1f)
                 )
+            }
+
+            Text("Чаевые: ${tipsPercent.toInt()}%")
+            Slider(
+                value = tipsPercent,
+                onValueChange = { tipsPercent = it },
+                valueRange = 0f..25f,
+                steps = 4,
+                onValueChangeFinished = {
+                    val tips = orderSum * tipsPercent / 100.0
+                    scope.launch {
+                        snackbarHostState.showSnackbar("Сумма чаевых: %.2f".format(tips))
+                    }
+                }
+            )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text("0")
+                Text("25")
             }
         }
     }
